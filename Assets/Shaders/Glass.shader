@@ -2,6 +2,7 @@
 {
     Properties{
         _MainTex("MainTex",2D) = "white"{}
+        _NormalIntensity("NormalIntensity",Float) = 1
         _Alpha("Alpha",Float) = 1
     }
     SubShader
@@ -53,13 +54,16 @@ Tags {"Queue"="Transparent" "RenderType"="Transparent"}
             }
 
             sampler2D _GrabTexture;
+            float _NormalIntensity;
 
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 c = 0;
                 //c.rgb = i.worldNormal*0.5+0.5;
-                float3 distortion = UnpackNormal(tex2D(_MainTex,i.uv));
-                fixed4 col = tex2Dproj(_GrabTexture, i.grabPos+float4(distortion,0));
+                float3 distortionNormal = UnpackNormal(tex2D(_MainTex,i.uv));
+                distortionNormal.xy *= _NormalIntensity;
+                normalize(distortionNormal);
+                fixed4 col = tex2Dproj(_GrabTexture, i.grabPos+float4(distortionNormal,0));
                 return col;
             }
             ENDCG
