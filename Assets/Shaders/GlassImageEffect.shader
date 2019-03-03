@@ -28,6 +28,7 @@
 			{
 				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
+				float4 screen : TEXCOORD1;
 			};
 
 			v2f vert (appdata v)
@@ -35,18 +36,20 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
+				o.screen = ComputeScreenPos(v.vertex);
 				return o;
 			}
 			
 			sampler2D _MainTex,_Distortion;
 
+
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed4 distortion = tex2D(_Distortion,i.uv);
-				fixed4 col = tex2D(_MainTex, i.uv+distortion.r/10);
+				float3 normal = tex2D(_Distortion,i.uv);
+				fixed4 col = tex2D(_MainTex, i.uv+normal);
 				
 	
-				return distortion;
+				return col;
 			}
 			ENDCG
 		}

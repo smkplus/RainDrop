@@ -58,8 +58,8 @@ Tags {"Queue"="Transparent" "RenderType"="Transparent"}
             {
                 fixed4 c = 0;
                 //c.rgb = i.worldNormal*0.5+0.5;
-                float4 distortion = tex2D(_MainTex,i.uv);
-                fixed4 col = tex2Dproj(_GrabTexture, i.grabPos+distortion.r);
+                float3 distortion = UnpackNormal(tex2D(_MainTex,i.uv));
+                fixed4 col = tex2Dproj(_GrabTexture, i.grabPos+float4(distortion,0));
                 return col;
             }
             ENDCG
